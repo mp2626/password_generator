@@ -10,9 +10,10 @@ var generateBtn = document.querySelector("#generate");
 // Writes password to the #password once the password has been generated
 function writePassword() {
   var password = generatePassword();
-  var passwordText = document.querySelector("#password");
-
-  passwordText.value = password;
+  if (password !== undefined) {
+    var passwordText = document.querySelector("#password");
+    passwordText.value = password;
+  }
 }
 
 // Generates random number with in the max number argument provide by the user
@@ -39,33 +40,26 @@ generateBtn.addEventListener("click", writePassword);
 function generatePassword() {
   var userPasswordLength = parseInt(window.prompt("Please select a number between 8 - 128 characters"))
 
-  // Checks for valid input, is a number and between 8 -128
-  // If not, calls the generatePassword again
+  // Checks for valid input, if a number and between 8 -128
+  // if not, stops to script - user to click generate button
   if (isNaN(userPasswordLength) || userPasswordLength < 8 || userPasswordLength > 128) {
     alert("That was not a valid input. Please select a number between 8 - 128")
-    generatePassword()
+    return
   } else {
+
     // prompt for criteria for user PW requirements (lowercase, uppercase, numeric, and/or special characters)
     var lowerCase = confirm("Do you want your password to have lowercase characters include?");
     var upperCase = confirm("Do you want your password to have uppercase characters include?");
     var numeric = confirm("Do you want your password to have numeric characters include?");
     var specialCharacters = confirm("Do you want your password to have special characters include?");
 
-    // var inputCheck = 0
-    // if (lowerCase == true) {
-    //     inputCheck ++
-    // }
-    // if (upperCase == true) {
-    //     inputCheck ++
-    // }
-    // if (numeric == true) {
-    //     inputCheck ++
-    // }
-    // if (specialCharacters == true) {
-    //     inputCheck ++
-    // }
 
-
+    // checks to see if user selected at least one pw requirement
+    // if not, stops to script - user to click generate button
+    if (lowerCase === false && upperCase === false && numeric === false && specialCharacters === false) {
+      alert("You must select at least one option from the password criteria options")
+      return
+    }
 
     // sets variables for loop count and password capture
     var countLength = userPasswordLength
@@ -75,6 +69,7 @@ function generatePassword() {
     // While Loop - checks to confirm that count length has not reached 0
     // if block reduce count number to prevent a PW being generated outside of user requirements
     while (countLength != 0) {
+
       // if checks to confirm the user would like lowercase in PW
       // if also checks to see if count != 0, (not require for fist if i know)
       if (lowerCase === true && countLength != 0) {
@@ -82,7 +77,6 @@ function generatePassword() {
         password += alphabet[arrayNumber];
         countLength--;
         arrayNumber = "";
-        alert(password)
       }
       // if checks to confirm the user would like lowercase in PW
       // if also checks to see if count != 0, as loop can be entered and count can be 0 after another if is completed
@@ -95,14 +89,12 @@ function generatePassword() {
         countLength--;
         // cleans out var for next loop
         arrayNumber = "";
-        alert(password)
       }
       if (numeric === true && countLength != 0) {
         let arrayNumber = getNumber(9);
         password += arrayNumber;
         countLength--;
         arrayNumber = "";
-        alert(password)
       }
       if (specialCharacters === true && countLength != 0) {
         let arrayNumber = getNumber(7)
@@ -110,12 +102,11 @@ function generatePassword() {
         password += specialChars[arrayNumber]
         countLength--;
         arrayNumber = "";
-        alert(password)
       }
     }
   }
   // calls shuffleWord function on PW to ensure its more secure
-  // PW generation follow the same pattern
+  // This is because the PW generation in the while loop follows the same pattern
   mixedPW = shuffleWord(password)
   // return the PW to the wite PW function so that the pw is provided to the user
   return mixedPW
